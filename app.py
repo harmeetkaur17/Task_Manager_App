@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from models import db, Task, User
 from datetime import datetime
+import os
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -12,6 +14,11 @@ db.init_app(app)
 login_manager = LoginManager()
 login_manager.login_view = "login"
 login_manager.init_app(app)
+
+
+if app.config["SQLALCHEMY_DATABASE_URI"].startswith("postgres://"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = app.config["SQLALCHEMY_DATABASE_URI"].replace("postgres://", "postgresql://")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Create tables
 with app.app_context():
