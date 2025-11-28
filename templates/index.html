@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="app-title">Task Manager</h1>
+
+<div class="task-form">
+    <form method="POST" action="{{ url_for('add_task') }}">
+        <input type="text" name="title" required placeholder="Task title">
+        <textarea name="description" placeholder="Description"></textarea>
+
+        <select name="priority">
+            <option>High</option>
+            <option selected>Medium</option>
+            <option>Low</option>
+        </select>
+
+        <input type="date" name="due_date">
+
+        <button type="submit">Add Task</button>
+    </form>
+</div>
+
+{% for task in tasks %}
+<div class="task">
+    <h3 class="{{ 'completed' if task.completed }}">{{ task.title }}</h3>
+    {% if task.description %}
+    <p>{{ task.description }}</p>
+    {% endif %}
+
+    <p><b>Priority:</b> {{ task.priority }}  
+       {% if task.due_date %} | <b>Due:</b> {{ task.due_date }} {% endif %}
+    </p>
+
+    <a href="{{ url_for('toggle', id=task.id) }}">
+        <button class="complete-btn">{{ 'Unmark' if task.completed else 'Complete' }}</button>
+    </a>
+
+    <a href="{{ url_for('edit', id=task.id) }}">
+        <button class="edit-btn">Edit</button>
+    </a>
+
+    <a href="{{ url_for('delete', id=task.id) }}">
+        <button class="delete-btn">Delete</button>
+    </a>
+</div>
+{% endfor %}
+
+{% endblock %}
