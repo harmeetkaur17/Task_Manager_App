@@ -5,6 +5,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    {% if current_user.is_authenticated %}
+    <nav class="navbar">
+        <div class="navbar-container">
+            <span class="user-info">Welcome, {{ current_user.username }}</span>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </nav>
+    {% endif %}
     <div class="container">
         {% block content %}{% endblock %}
     </div>

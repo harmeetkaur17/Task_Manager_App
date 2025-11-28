@@ -129,3 +129,76 @@ body {
     opacity: 0.6;
 }
 
+.auth-container {
+    max-width: 420px;
+    margin: 60px auto;
+    background: rgba(255, 255, 255, 0.75);
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.auth-title {
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+.auth-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 18px;
+    border-radius: 12px;
+    border: 1px solid #cbd5e1;
+    font-size: 1rem;
+}
+
+.auth-note {
+    margin-top: 15px;
+}
+
+.auth-note a {
+    color: #2563eb;
+    font-weight: bold;
+}
+
+.error-msg {
+    color: red;
+    margin-bottom: 12px;
+}
+
+/* Navbar */
+.navbar {
+    background: #333;
+    padding: 15px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.navbar-container {
+    width: 80%;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info {
+    color: white;
+    font-size: 16px;
+}
+
+.logout-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
+}

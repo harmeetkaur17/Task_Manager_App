@@ -1,20 +1,71 @@
 from flask import Flask, render_template, request, redirect, url_for
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
-from models import db, Task
+from models import db, Task, User
 from datetime import datetime
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
+login_manager = LoginManager()
+login_manager.login_view = "login"
+login_manager.init_app(app)
+
 # Create tables
 with app.app_context():
     db.create_all()
 
 @app.route("/")
+@login_required
 def index():
-    tasks = Task.query.order_by(Task.created_at.desc()).all()
+    tasks = Task.query.filter_by(user_id=current_user.id).order_by(Task.created_at.desc()).all()
     return render_template("index.html", tasks=tasks)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        email = request.form["email"]
+        password = request.form["password"]
+
+        hashed = generate_password_hash(password)
+
+        new_user = User(username=username, email=email, password=hashed)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return redirect("/login")
+
+    return render_template("register.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
+
+        user = User.query.filter_by(email=email).first()
+
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            return redirect("/")
+
+        return render_template("login.html", error="Invalid credentials")
+
+    return render_template("login.html")
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/login")
 
 @app.route("/add", methods=["POST"])
 def add_task():
@@ -28,6 +79,7 @@ def add_task():
         description=description,
         priority=priority,
         due_date=datetime.strptime(due_date, "%Y-%m-%d") if due_date else None,
+        user_id=current_user.id,
     )
 
     db.session.add(task)
